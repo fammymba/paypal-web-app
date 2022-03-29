@@ -1,7 +1,7 @@
 node{
 	def mavenHome = tool name: 'maven3.8.4'
 	stage('1.Clone'){
-		git branch: 'dev', credentialsId: 'GitHub-PAT', url: 'https://github.com/fammymba/paypal-web-app'
+		git branch: 'feature', credentialsId: 'GitHub-PAT', url: 'https://github.com/fammymba/paypal-web-app'
 	}
 	stage('2.mavenBuild'){
 		sh "${mavenHome}/bin/mvn clean package"
@@ -13,7 +13,10 @@ node{
 		sh "${mavenHome}/bin/mvn deploy"
 	}
 	stage('5.Deploy2TomcatDEV'){
-		deploy adapters: [tomcat9(credentialsId: 'Tomcat-Credentials', path: '', url: 'http://34.238.39.95:8080/')], contextPath: null, war: 'target/web-app.war'
+		// deploy adapters: [tomcat9(credentialsId: 'Tomcat-Credentials', path: '', url: 'http://34.238.39.95:8080/')], contextPath: null, war: 'target/web-app.war'
+	sshagent(['agenttomcat1-credentials']) {
+   sh "scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.95.96:/opt/tomcat9/webapps"
+   }
 	}
 	stage('6.Deploy2TomcatUAT'){
 	sshagent(['agenttomcat1-credentials']) {
@@ -28,9 +31,10 @@ node{
 	stage('8.Deploy2TomcatPROD'){
 	sshagent(['agenttomcat1-credentials']) {
    sh "scp -o StrictHostKeyChecking=no target/*.war ec2-user@172.31.95.96:/opt/tomcat9/webapps/prod.war"
+
    }
-	}
-	stage('9.EmailAlert'){
+ }
+ 	stage('9.EmailAlert'){
 	emailext body: '''Hi,
 
 	Build Status for boa app.
