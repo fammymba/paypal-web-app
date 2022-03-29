@@ -6,7 +6,7 @@ node{
 	stage('2.mavenBuild'){
 		sh "${mavenHome}/bin/mvn clean package"
 	}
-	stage('3.CodeQuality'){
+	/*stage('3.CodeQuality'){
 		sh "${mavenHome}/bin/mvn sonar:sonar"
 	}
 	stage('4.UploadArtifacts'){
@@ -41,6 +41,7 @@ node{
 
 	Regards,
 
-	AMMConsulting +1 642 841 3341''', recipientProviders: [developers(), requestor()], subject: 'Project Status', to: 'fammymba@gmail.com'
-  }
+	AMMConsulting +1 642 841 3341''', recipientProviders: [developers(), requestor()], subject: 'Project Status', to: 'fammymba@gmail.com' 
+ }
+ */
 }
